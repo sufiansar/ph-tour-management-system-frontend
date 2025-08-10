@@ -3,12 +3,19 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router";
 import { router } from "./router/index.tsx";
+
+import { Provider as ReduxProvider } from "react-redux";
+import { store } from "./redux/store.ts";
+import { Toaster } from "./components/ui/sonner.tsx";
 import { ThemeProvider } from "./providers/theme.provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <ReduxProvider store={store}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+        <Toaster richColors />
+      </ThemeProvider>
+    </ReduxProvider>
   </StrictMode>
 );
