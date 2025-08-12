@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
 import Password from "@/components/ui/Password";
+import config from "@/config/envConfig";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -48,11 +49,22 @@ export function LoginForm({
       };
       const result = await login(loginInfo).unwrap();
       toast.success("Login successful!");
+      navigate("/");
+
       console.log("Login result:", result);
-    } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
-      navigate("/verify", { state: data.email });
-      console.error("Login error:", error);
+    } catch (err: any) {
+      console.log(err);
+      if (err.data.err === "Password does not match") {
+        toast.error("Please First You Register Your Account");
+        return;
+      }
+      if (err.data.err === "User is not verified") {
+        toast.error("Login failed. Please check your credentials.");
+        navigate("/verify", { state: data.email });
+      }
+
+      // // navigate("/verify", { state: data.email });
+      // console.error("Login error:", error);
     }
   };
 
@@ -116,7 +128,12 @@ export function LoginForm({
         </span>
       </div>
 
-      <Button type="button" variant="outline" className="w-full cursor-pointer">
+      <Button
+        onClick={() => window.open(`${config.baseUrl}/auth/google`)}
+        type="button"
+        variant="outline"
+        className="w-full cursor-pointer"
+      >
         Login with Google
       </Button>
 

@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import config from "@/config/envConfig";
 
 const registerSchema = z
   .object({
@@ -72,7 +73,7 @@ export function RegisterForm({
       const result = await register(userInfo).unwrap();
       console.log(result);
       toast.success("User created successfully");
-      navigate("/verify");
+      navigate("/verify", { state: data.email });
     } catch (error) {
       console.error(error);
       toast.error("Registration failed");
@@ -174,6 +175,7 @@ export function RegisterForm({
         </div>
 
         <Button
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"
